@@ -7,8 +7,8 @@
 
 	<form action="/register" method="post">
 		<div class="form-group">
-			<label>title</label> <input id="iTitle" type="text" class="form-control"
-				name="title" placeholder="title">
+			<label>title</label> <input id="iTitle" type="text"
+				class="form-control" name="title" placeholder="title">
 
 		</div>
 		<div class="form-group">
@@ -32,22 +32,22 @@
 	</button>
 
 	<script>
-	
-	$(document).ready(function() {
-		if($('#iTitle').val().length==0){
-	$('#regiBtn').on("click", function(e) {
-		
-		e.preventDefault;
-		
-		console.log("title 문제 !!!!")
-		console.log($('#iTitle').val().length)
-		
-		alert("Title 입력해주세요....");
-	})
-	
-	}
-	})
-</script>
+		$(document).ready(function() {
+
+			$('#regiBtn').on("click", function(e) {
+
+				e.preventDefault;
+
+				console.log("title 문제 !!!!")
+				console.log($('#iTitle').val().length)
+				
+				if ($('#iTitle').val().length == 0) {
+					alert("Title 입력해주세요....");
+				}
+			})
+
+		})
+	</script>
 
 </body>
 </html>
