@@ -1,5 +1,6 @@
 package org.zerock.web;
 
+
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
@@ -26,13 +27,17 @@ public class BoardController {
 	public void mainGet(Criteria cri, Model model) {
 
 		logger.info("get main .....");
+		logger.info(cri);
+
+		int listSize = service.listAll(cri).size();
+		model.addAttribute("listSize", listSize);
 
 		model.addAttribute("list", service.listAll(cri));
 
-		PageMaker pageMaker = new PageMaker(cri, service.totalCount());
+		PageMaker pageMaker = new PageMaker(cri, service.totalCount(cri));
 
 		model.addAttribute("pageMaker", pageMaker);
-		model.addAttribute("cri",cri);
+		model.addAttribute("cri", cri);
 
 	}
 
@@ -50,10 +55,10 @@ public class BoardController {
 
 		service.regist(vo);
 
+		//rttr.addFlashAttribute("msg", "SUCCESS");
+
 		return "redirect:/board/main";
 
 	}
-	
-
 
 }

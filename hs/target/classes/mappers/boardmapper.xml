@@ -12,12 +12,37 @@
 
 	<select id="listAll" resultType="org.zerock.domain.BoardVO"
 		parameterType="org.zerock.domain.Criteria">
-		select * from tbl_board where bno>0 order by bno desc limit
+		select * from tbl_board where bno>0 
+			
+		<if test="type=='n'.toString()">
+		</if>
+		<if test="type=='t'.toString()">
+		and title like concat("%","${keyword}","%")	
+		</if>
+		<if test="type=='c'.toString()">
+		and content like concat("%","${keyword}","%")	
+		</if>
+		<if test="type=='w'.toString()">
+		and writer like concat("%","${keyword}","%")	
+		</if>
+		order by bno desc limit
 		${skip},${pageNum}
 	</select>
 
-	<select id="totalCount" resultType="Int">
-		select count(*) from tbl_board
+	<select id="totalCount" resultType="Int" parameterType="org.zerock.domain.Criteria">
+		select count(*) from tbl_board where bno>0
+		
+		<if test="type=='n'.toString()">
+		</if>
+		<if test="type=='t'.toString()">
+		and title like concat("%","${keyword}","%")	
+		</if>
+		<if test="type=='c'.toString()">
+		and content like concat("%","${keyword}","%")	
+		</if>
+		<if test="type=='w'.toString()">
+		and writer like concat("%","${keyword}","%")	
+		</if>
 	</select>
 
 	<insert id="create" parameterType="org.zerock.domain.BoardVO">
@@ -29,6 +54,17 @@
 	<select id="readOne" parameterType="int" resultType="org.zerock.domain.BoardVO">
 		select * from tbl_board where bno= #{num}
 	</select>
+	
+	<delete id="delete" parameterType="int">
+	delete from tbl_board where bno=#{num}
+	
+	</delete>
+	
+	<update id="update" parameterType="org.zerock.domain.BoardVO">
+	
+	update tbl_board set title = '${title}', content='${content}', writer='${writer}', updatedate=now() where bno= ${bno}
+	
+	</update>
 
 
 </mapper>

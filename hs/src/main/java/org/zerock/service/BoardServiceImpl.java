@@ -26,13 +26,23 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public int totalCount() {
-		return dao.totalCount();
+	public int totalCount(Criteria cri) {
+		return dao.totalCount(cri);
 	}
 
 	@Override
 	public BoardVO read(int bno) {
 		return dao.read(bno);
+	}
+
+	@Override
+	public void delete(int bno) {
+		dao.delete(bno);
+	}
+
+	@Override
+	public void modify(BoardVO vo) {
+		dao.modify(vo);
 	}
 
 }

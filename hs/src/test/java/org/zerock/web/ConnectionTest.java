@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.zerock.domain.Criteria;
 import org.zerock.persistence.BoardDAO;
+import org.zerock.service.BoardService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="file:src/main/webapp/WEB-INF/spring/**/root-context.xml")
@@ -18,6 +19,20 @@ public class ConnectionTest {
 	BoardDAO dao;
 	@Inject
 	SqlSessionTemplate sess;
+	@Inject
+	BoardService service;
+	
+	
+	
+	@Test
+	public void searchTest(){
+	Criteria cri= new Criteria();	
+		cri.setType("하하");
+		cri.setKeyword("하하");
+		
+		service.listAll(cri);
+		
+	}
 	
 	@Test
 public void getList() throws Exception{

@@ -7,10 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
-import org.zerock.domain.PageMaker;
 import org.zerock.service.BoardService;
 
 @Controller
@@ -23,17 +21,18 @@ public class SubController {
 	BoardService service;
 	
 	@GetMapping
-	public void subGet(BoardVO vo, Model model, @RequestParam("bno") int bno, @RequestParam("page") int page){
-		
+	public void subGet(BoardVO vo, Model model, Criteria cri){
+		logger.info("sub get!!!!");
 		logger.info(vo);
+		logger.info(cri);		
+		logger.info(cri.getPage());		
 		
-		logger.info(page);
 		
-		
-		System.out.println("bno==================" + bno);
-		vo = service.read(bno);
-				
+		System.out.println("bno==================" + vo.getBno());
+		vo = service.read(vo.getBno());
+		logger.info(vo);	
 		model.addAttribute("vo",vo);
+		model.addAttribute("cri",cri);
 		
 		
 	}
