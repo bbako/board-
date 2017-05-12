@@ -7,9 +7,9 @@
 
 <body>
 
-	<div class="panel panel-default">
+	<div class="panel panel-danger">
 		<div class="panel-heading">
-			<h3 class="panel-title">List</h3>
+			<h1>List</h1>
 		</div>
 		<div class="panel-body">
 			<table class="table table-striped">
