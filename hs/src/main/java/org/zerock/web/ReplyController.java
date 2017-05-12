@@ -1,6 +1,8 @@
 package org.zerock.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.PageMaker;
 import org.zerock.domain.ReplyVO;
 import org.zerock.service.ReplyService;
 
@@ -29,20 +32,27 @@ public class ReplyController {
 	
 	
 	@GetMapping
-	public ResponseEntity<List<ReplyVO>> replyGet(BoardVO vo, Model model, Criteria cri){
+	public ResponseEntity<Map<String, Object>> replyGet(BoardVO vo, Model model, Criteria cri){
 		logger.info("reply get!!!!");
 		logger.info(vo);
 		logger.info(cri);		
-		logger.info(cri.getPage());	
-		
-		model.addAttribute("vo",vo);
-		model.addAttribute("cri",cri);
 
-		ResponseEntity<List<ReplyVO>> entity=null;
+		PageMaker pagemaker = new PageMaker(cri, reservice.retotal(vo));
 		
-		logger.info(reservice.read(vo.getBno()));
+		pagemaker.setCri(cri);
 		
-		entity= new ResponseEntity<List<ReplyVO>>(reservice.read(vo.getBno()),HttpStatus.OK);
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		List<ReplyVO> list = reservice.read(vo.getBno(),cri);
+		
+		map.put("list", list);
+		map.put("pageMaker", pagemaker);
+		
+		ResponseEntity<Map<String, Object>> entity=null;
+		
+		logger.info(reservice.read(vo.getBno(),cri));
+		
+		entity= new ResponseEntity<Map<String, Object>>(map,HttpStatus.OK);
 		
 		logger.info(entity);
 		

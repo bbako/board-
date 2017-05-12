@@ -69,7 +69,7 @@
 
 				e.preventDefault();
 				var formObj = $('#f2');
-				formObj.attr('action', '/board/main');
+				formObj.attr('action', '/sub');
 				formObj.attr('method', 'get');
 				formObj.submit();
 

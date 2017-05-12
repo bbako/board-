@@ -60,7 +60,27 @@
 			</h5>
 			
 		</div>
+<div class="panel-body">
+<table class="table table-striped">
+		<thead>
+				<tr>	
+					<td>넘버</td>
+					<td>글쓴이</td>
+					<td>작성자</td>
+					<td>작성날짜</td>
+					<td>최근수정날짜</td>
+					<td></td>
+				</tr></thead>
+				<tbody id="retr">
+				
+				
+				</tbody>
+				
+</table>
 
+
+
+</div>
 		<!-- modal 시작 !!!-->
 
 
@@ -153,47 +173,88 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
 	<script>
-	var bno = ${vo.bno};
+		var bno = ${vo.bno};
+		var replyPage=1;
 		
+	
 		$(document).ready(function() {
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+				
 			function getreply() {
 				
-				$.getJSON("/reply?bno="+bno,function(data){
-					
+				$.getJSON("/reply?bno="+bno+"&page="+replyPage,function(data){
+					console.log("getreply function!!!")
 					var i=1;
 					var str="";
 					
-					 $(data).each(function(){
+					 $(data.list).each(function(){
+						 
+						 
+						 var regDate2 = new Date(this.regdate);
+						 var updateDate2 = new Date(this.updatedate);
 						
-						str+="<li data-replytext='"+this.replytext+"' data-replyer='"+this.replyer+"' data-rno='"+this.rno+"'id='replyLi' class='list-group-item'>"
-							+i++ +" : "+this.replyer +" : "+ this.replytext
-							+" : "+ this.regdate+" -- "+this.updatedate
-							+" "+'<button type="button" id="remodibtn" class="btn btn-default" data-toggle="modal" data-target="#exampleModal2">수정</button></li>';
-			
+						 dateString = regDate2.toLocaleString();
+						 dateString2 = updateDate2.toLocaleString();
+						 
+						 
+						
+							str+="<tr ><td>"+i++ +"</td>"
+							str+="<td>"+this.replyer+"</td>"
+							str+="<td>"+this.replytext+"</td>"
+							str+="<td>"+dateString+"</td>"
+							str+="<td>"+dateString2+"</td>"
+							str+="<td data-replytext='"+this.replytext+"' data-replyer='"+this.replyer+"' data-rno='"+this.rno+"'><a href='#' id='remodibtn' data-toggle='modal' data-target='#exampleModal2'><i class='glyphicon glyphicon-wrench' ></i></a></td>"
+							str+="<td><a href='#' id='redelbtn' data-toggle='modal' data-target='#exampleModal2'><i class='glyphicon glyphicon-remove' ></i></a></td></tr>"
 					}); 
 					
-					$("#replies").html(str);
+					$("#retr").html(str);
 									
 				});
 			}
 			
 			getreply();
+			
+			
+			function printPaging(page) {
+				
+				$.getJSON("/reply?bno="+bno+"&page="+replyPage,function(data){
+				
+				var str="";
+				var pageMaker=data.pageMaker;
+				console.log("data.pageMaker");
+				console.log(data.pageMaker);
+				console.log(pageMaker.start-1);
+				
+				if(pageMaker.prev){
+					str+="<li><a class='prev' href='"+(pageMaker.start-1)+"'aria-label='Previous'><span aria-hidden=false>&laquo;</span></a></li>"; 
+				}
+				for(var i=pageMaker.start,len=pageMaker.end; i<=len;i++){
+					var strClass=pageMaker.current ==i?'class=active':'';
+					str+="<li "+strClass+"><a href='"+i+"'>"+i+"</a></li>";
+					
+				}
+				if(pageMaker.next){
+					str+="<li><a class='prev' href='"+(pageMaker.end+1)+"'aria-label='Next'><span aria-hidden=false>&raquo;</span></a></li>"; 
+				}
+					$(".pagination").html(str);
+					});	
+				
+			};
+			
+			printPaging(1);
+			
 
+			$(".pagination").on("click","li a",function(e){
+				
+				e.preventDefault();
+				
+				replyPage=$(this).attr("href");
+				
+				getreply();
+				printPaging(replyPage);
+				
+			});
+			
+			
 			$('#deleteBtn').on("click", function(e) {
 
 				e.preventDefault();
@@ -268,7 +329,9 @@
 			               
 			               $('#exampleModal').hide("slow");
 			              
+			               printPaging(replyPage);
 			               getreply();
+			              		               
 			              
 			           }
 			         });
@@ -276,113 +339,110 @@
 			
 			/*------------- 흠 실험 1 -------------*/
 			
-		$("#remodibtn").on("click", function(e) {
-				
-				console.log("modi in ?????")
-				
-				var replyer2 = $("#replyer2").val();
-				var replytext2 = $("#replytext2").val();
-				var rno = $("#rno").val();
-				
-				console.info(replyer2);
-				console.info(replytext2);
-				console.info(rno);
-				
-				 $.ajax({
-			           type: 'post',
-			           url: '/remodify',
-			           headers:{"content-type": "application/json",
-			        	   "X-HTTP-Method-Override":"POST"},			           
-			           dataType:'text',
-			           data: JSON.stringify({
-			        	   rno:rno,
-			        	   replyer :replyer2,
-			        	   replytext :replytext2
-			           }), 
-			           success: function(data)
-			           {
-			               alert(data); 
-			               
-			               $("#replyer2").val("");
-			               $("#replytext2").val("");
-			               
-			               $('#exampleModal').hide("slow");
-			              
-			               getreply();
-			              
-			           }
-			         });
-				});
+			$("#remodibtn").on("click", function(e) {
+					
+					console.log("modi in ?????")
+					
+					var replyer2 = $("#replyer2").val();
+					var replytext2 = $("#replytext2").val();
+					var rno = $("#rno").val();
+					
+					console.info(replyer2);
+					console.info(replytext2);
+					console.info(rno);
+					
+					 $.ajax({
+				           type: 'post',
+				           url: '/remodify',
+				           headers:{"content-type": "application/json",
+				        	   "X-HTTP-Method-Override":"POST"},			           
+				           dataType:'text',
+				           data: JSON.stringify({
+				        	   rno:rno,
+				        	   replyer :replyer2,
+				        	   replytext :replytext2
+				           }), 
+				           success: function(data)
+				           {
+				               alert(data); 
+				               
+				               $("#replyer2").val("");
+				               $("#replytext2").val("");
+				               
+				               $('#exampleModal').hide("slow");
+				              
+				               getreply();
+				              
+				           }
+				         });
+					});
 				
 			/* ------------- 흠 실험 1 ------------- */			
 			
 			/* --------------아직 안만들어진 reply li의 버튼---------------- */
 
-							$("#replies").on("click","#replyLi button",function(){
-								console.log("수정......");
-								
-								var reply =$(this).parent();
-								
-								var rno2 = reply.attr("data-rno");
-								var replytext = reply.attr("data-replytext");
-								var replyer = reply.attr("data-replyer");
-								console.log(rno2);
-								console.log(replytext);
-								console.log(replyer);
-								
-								$("#replyer2").val(replyer);
-								$("#replytext2").val(replytext);
-								$("#rno").val(rno2);
-								
-							})
+					$("#retr").on("click","td #remodibtn",function(){
+						
+						console.log("수정......");
+						console.dir(this);
+						
+						var reply =$(this).parent();						
+						var rno2 = reply.attr("data-rno");
+						var replytext = reply.attr("data-replytext");
+						var replyer = reply.attr("data-replyer");
+						
+						console.log(rno2);
+						console.log(replytext);
+						console.log(replyer);
+						
+						$("#replyer2").val(replyer);
+						$("#replytext2").val(replytext);
+						$("#rno").val(rno2);
+						
+					})
 							
 			
 		/* --------------아직 안만들어진 reply li의 버튼---------------- */
 			
 			
 		
-							$("#redelbtn").on("click", function(e) {
-								
-								console.log("reply delete in ?????")
-								
-								var result = confirm('댓글을  지우시겠습니까??'); 
-								
-								if(result) {
-							
-								var rno = $("#rno").val();
-								
-								console.info(rno);
-								
-								 $.ajax({
-							           type: 'post',
-							           url: '/redelete',
-							           headers:{"content-type": "application/json",
-							        	   "X-HTTP-Method-Override":"POST"},			           
-							           dataType:'text',
-							           data: JSON.stringify({
-							        	   rno:rno,
-							           }), 
-							           success: function(data)
-							           {
-							               alert(data); 
-							               
-							               $("#replyer2").val("");
-							               $("#replytext2").val("");
-							               
-							               $('#exampleModal').hide("slow");
-							              
-							               getreply();
-							              
-							           }
-							         });
-									}
-								});
-		
-		
-							
-		
-		
-			
+				$("#redelbtn").on("click", function(e) {
+					
+					console.log("reply delete in ?????")
+					
+					var result = confirm('댓글을  지우시겠습니까??'); 
+					
+					if(result) {
+				
+					var rno = $("#rno").val();
+					
+					console.info(rno);
+					
+					 $.ajax({
+				           type: 'post',
+				           url: '/redelete',
+				           headers:{"content-type": "application/json",
+				        	   "X-HTTP-Method-Override":"POST"},			           
+				           dataType:'text',
+				           data: JSON.stringify({
+				        	   rno:rno,
+				           }), 
+				           success: function(data)
+				           {
+				               alert(data); 
+				               
+				               $("#replyer2").val("");
+				               $("#replytext2").val("");
+				               
+				               $('#exampleModal').hide("slow");
+				              
+				               printPaging(replyPage);
+				               getreply();
+				              
+				           }
+				         });
+						}
+					});
 						
 	});
 	</script>

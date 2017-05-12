@@ -8,7 +8,7 @@
   
   <select id="replylist" resultType="org.zerock.domain.ReplyVO" >
   
-  select * from tbl_reply where rno>0 and bno=#{bno} order by rno desc
+  select * from tbl_reply where rno>0 and bno=#{bno} order by rno desc limit #{cri.skip},#{cri.pageNum}
   
   </select>
   
@@ -23,5 +23,9 @@
   <delete id="redelete" parameterType="org.zerock.domain.ReplyVO" >
   delete from tbl_reply where rno="${rno}"
   </delete>
+  
+  <select id="retotal" resultType="Int" parameterType="org.zerock.domain.BoardVO">
+		select count(*) from tbl_reply where rno>0 and bno=${bno}
+  </select>
   
   </mapper>

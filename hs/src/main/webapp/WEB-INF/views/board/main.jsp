@@ -38,12 +38,9 @@
 					</c:when>
 					<c:when test="${listSize == 0}">
 						<tr>
-							<td><h2>
-									검색 결과가 없습니다......
-									<button>
-										<a href="/board/main">첫 페이지로 가기</a>
-									</button>
-								</h2></td>
+							<td><h2>검색 결과가 없습니다......<button>
+								<a href="/board/main">첫 페이지로 가기</a>
+							</button></h2></td>
 
 						</tr>
 					</c:when>
@@ -93,9 +90,13 @@
 
 
 			</div>
-			<a href="/register" class="btn btn-primary btn-lg active"
-				role="button">새글 등록</a>
-
+			
+			<div class="panel panel-success">
+			  <div class="panel-heading"><h5><a href="/register" class="btn btn-success btn-lg active"
+				role="button">새글 등록</a></h5></div>
+			  
+			</div>
+			
 		</div>
 	</div>
 
